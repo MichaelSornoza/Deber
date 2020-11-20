@@ -75,8 +75,16 @@ public class Main {
                     menu();
                     break;
                 case 3:
+                    String dniUpdate;
                     addToList();
-                    estudianteList.forEach((student) -> System.out.println(student.dni));
+
+                    System.out.println("Ingrese el DNI del estudiante a modificar");
+
+                    sc.nextLine();
+                    dniUpdate = sc.next();
+
+                    update(dniUpdate);
+
                     menu();
                     break;
                 default:
@@ -157,6 +165,70 @@ public class Main {
 
     }
 
+    public static void update(String dni) {
+
+        Boolean encontrado = false;
+
+        for (Estudiante student : estudianteList) {
+            if (dni.equals(dni)) {
+                encontrado = true;
+
+                int response = 0;
+
+                System.out.println("Ingrese que nota desea cambiar: \n" + "1. Nota 1 \n" + "2. Nota 2 \n" + "3. Salir");
+
+                response = sc.nextInt();
+
+                switch (response) {
+
+                    case 1:
+                        System.out.println("Ingrese la nota 1");
+                        student.nota1 = sc.next();
+                        break;
+                    case 2:
+                        System.out.println("Ingrese nota 2");
+                        student.nota2 = sc.next();
+                        break;
+                    default:
+                        System.out.println("Opcion incorrecta, se regresa al menu");
+                        break;
+                }
+                saveData();
+            }
+        }
+
+        if (!encontrado)
+            System.out.println("No se encontro registro");
+
+    }
+
+    public static void saveData() {
+        FileWriter fichero = null;
+        PrintWriter pw = null;
+
+        try {
+
+            fichero = new FileWriter(URL_FICHERO, false);
+
+            pw = new PrintWriter(fichero);
+
+            for (Estudiante estudiante : estudianteList) {
+                pw.write(estudiante.dni + "/" + estudiante.nombre + "/" + estudiante.apellido + "/" + estudiante.nota1
+                        + "/" + estudiante.nota2 + "\n");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (null != fichero)
+                    fichero.close();
+            } catch (Exception e2) {
+                e2.printStackTrace();
+            }
+        }
+    }
+
     public static void addToList() {
 
         File archivo = null;
@@ -172,8 +244,6 @@ public class Main {
             if (exist) {
                 Boolean contenido = false;
                 String linea;
-
-                Estudiante estudiante = null;
 
                 fr = new FileReader(archivo);
                 br = new BufferedReader(fr);
